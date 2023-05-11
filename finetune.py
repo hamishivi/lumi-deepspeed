@@ -282,16 +282,9 @@ def main():
 
     # no default pad token for llama!
     # here we add all special tokens again, because the default ones are not in the special_tokens_map
-    if isinstance(tokenizer, LlamaTokenizer):
-        num_added_tokens = tokenizer.add_special_tokens({
-            "bos_token": "<s>",
-            "eos_token": "</s>",
-            "unk_token": "<unk>",
-            "pad_token": "<pad>",
-        })
-        assert num_added_tokens == 1, "LlamaTokenizer should only add one special token - the pad_token."
+    tokenizer.pad_token = tokenizer.eos_token
 
-    # resize embeddings if needed (e.g. for LlamaTokenizer)
+    # resize embeddings if needed
     embedding_size = model.get_input_embeddings().weight.shape[0]
     if len(tokenizer) > embedding_size:
         model.resize_token_embeddings(len(tokenizer))
